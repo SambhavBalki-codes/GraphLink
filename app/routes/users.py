@@ -1,0 +1,50 @@
+from fastapi import APIRouter, Depends, Query
+from sqlalchemy.orm import Session
+from app.database import get_db
+from app.schemas import UserCreate, UserResponse, UserSummary
+from app import services
+
+router = APIRouter(prefix="/users", tags=["Users"])
+
+
+@router.post("", response_model=UserResponse, status_code=201)
+def create_user(user: UserCreate, db: Session = Depends(get_db)):
+    return services.create_user(db, user.name, user.email)
+
+
+@router.get("", response_model=list[UserResponse])
+def list_users(
+    skip: int = Query(default=0, ge=0),
+    limit: int = Query(default=20, ge=1, le=100),
+    db: Session = Depends(get_db)
+):
+    return services.get_users(db, skip, limit) if hasattr(services, 'get_users') else []
+
+
+@router.get("/{user_id}", response_model=UserResponse)
+def get_user(user_id: int, db: Session = Depends(get_db)):
+    return services.get_user_or_404(db, user_id)
+
+
+@router.delete("/{user_id}")
+def delete_user(user_id: int, db: Session = Depends(get_db)):
+    return services.delete_user(db, user_id)
+
+
+@router.get("/{user_id}/friends", response_model=list[UserSummary])
+def get_friends(user_id: int, db: Session = Depends(get_db)):
+    return services.get_user_friends(db, user_id)
+
+
+@router.get("/{user_id}/recommendations")
+def get_recommendations(
+    user_id: int,
+    limit: int = Query(default=10, ge=1, le=50),
+    db: Session = Depends(get_db)
+):
+    return services.get_friend_recommendations(db, user_id, limit)
+
+
+@router.get("/{user_id}/stats")
+def get_user_stats(user_id: int, db: Session = Depends(get_db)):
+    return services.get_user_stats(db, user_id)
