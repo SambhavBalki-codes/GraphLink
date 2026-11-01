@@ -11,16 +11,22 @@ def get_user_or_404(db: Session, user_id: int):
     return user
 
 
-def create_user(db: Session, name: str, email: str):
+def create_user(db: Session, name: str, email: str, company: str = None, location: str = None, education: str = None, bio: str = None):
     existing = crud.get_user_by_email(db, email)
     if existing:
         raise HTTPException(status_code=409, detail="Email already registered")
     from app.schemas import UserCreate
-    return crud.create_user(db, UserCreate(name=name, email=email))
+    return crud.create_user(db, UserCreate(name=name, email=email, company=company, location=location, education=education, bio=bio))
 
 
 def get_users(db: Session, skip: int = 0, limit: int = 20):
     return crud.get_users(db, skip=skip, limit=limit)
+
+
+def update_user(db: Session, user_id: int, update_data):
+    get_user_or_404(db, user_id)
+    data = {k: v for k, v in update_data.model_dump().items() if v is not None}
+    return crud.update_user(db, user_id, data)
 
 
 def delete_user(db: Session, user_id: int):

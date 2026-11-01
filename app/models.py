@@ -10,6 +10,10 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
     email = Column(String, nullable=False, unique=True, index=True)
+    company = Column(String, nullable=True)
+    location = Column(String, nullable=True)
+    education = Column(String, nullable=True)
+    bio = Column(String, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
     friendships_as_user1 = relationship(

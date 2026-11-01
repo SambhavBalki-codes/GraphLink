@@ -17,8 +17,27 @@ def get_users(db: Session, skip: int = 0, limit: int = 20):
 
 
 def create_user(db: Session, user: UserCreate):
-    db_user = User(name=user.name, email=user.email)
+    db_user = User(
+        name=user.name,
+        email=user.email,
+        company=user.company,
+        location=user.location,
+        education=user.education,
+        bio=user.bio
+    )
     db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+
+def update_user(db: Session, user_id: int, update_data: dict):
+    db_user = get_user(db, user_id)
+    if not db_user:
+        return None
+    for key, value in update_data.items():
+        if value is not None:
+            setattr(db_user, key, value)
     db.commit()
     db.refresh(db_user)
     return db_user
