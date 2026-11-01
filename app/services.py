@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from app import crud
 from app.graph import build_adjacency_list, get_recommendations, bfs_distances
+from app.cache import recommendation_cache
 
 
 def get_user_or_404(db: Session, user_id: int):
@@ -32,6 +33,7 @@ def update_user(db: Session, user_id: int, update_data):
 def delete_user(db: Session, user_id: int):
     get_user_or_404(db, user_id)
     crud.delete_user(db, user_id)
+    recommendation_cache.invalidate(user_id)
     return {"message": f"User {user_id} deleted successfully"}
 
 
@@ -43,7 +45,9 @@ def create_friendship(db: Session, user_id_1: int, user_id_2: int):
     existing = crud.get_friendship(db, user_id_1, user_id_2)
     if existing:
         raise HTTPException(status_code=409, detail="Friendship already exists")
-    return crud.create_friendship(db, user_id_1, user_id_2)
+    result = crud.create_friendship(db, user_id_1, user_id_2)
+    recommendation_cache.invalidate_user_and_friends(user_id_1, [user_id_2])
+    return result
 
 
 def delete_friendship(db: Session, user_id_1: int, user_id_2: int):
@@ -53,6 +57,7 @@ def delete_friendship(db: Session, user_id_1: int, user_id_2: int):
     if not friendship:
         raise HTTPException(status_code=404, detail="Friendship not found")
     crud.delete_friendship(db, user_id_1, user_id_2)
+    recommendation_cache.invalidate_user_and_friends(user_id_1, [user_id_2])
     return {"message": "Friendship deleted successfully"}
 
 
@@ -90,11 +95,18 @@ def get_friend_recommendations(db: Session, user_id: int, limit: int = 10):
 
 def get_friend_recommendations_v2(db: Session, user_id: int, limit: int = 10, algorithm: str = "v2"):
     user = get_user_or_404(db, user_id)
+
+    cache_key = f"{user_id}_{limit}_{algorithm}"
+    cached = recommendation_cache.get(user_id)
+    if cached and cached.get("cache_key") == cache_key:
+        return cached["data"]
+
     all_friendships = crud.get_all_friendships(db)
     friendship_pairs = [(f.user_id_1, f.user_id_2) for f in all_friendships]
     graph = build_adjacency_list(friendship_pairs)
     use_multi_signal = algorithm != "v1"
     raw_recommendations = get_recommendations(user_id, graph, limit, use_multi_signal)
+
     result = []
     for rec in raw_recommendations:
         candidate = crud.get_user(db, rec["candidate_id"])
@@ -115,7 +127,10 @@ def get_friend_recommendations_v2(db: Session, user_id: int, limit: int = 10, al
             "distance": rec["distance"],
             "reason": f"You share {count} mutual friend{'s' if count > 1 else ''}."
         })
-    return {"user_id": user_id, "algorithm": algorithm, "recommendations": result}
+
+    response = {"user_id": user_id, "algorithm": algorithm, "recommendations": result}
+    recommendation_cache.set(user_id, {"cache_key": cache_key, "data": response})
+    return response
 
 
 def get_connection_path(db: Session, user_id: int, other_user_id: int):
