@@ -18,7 +18,7 @@ def list_users(
     limit: int = Query(default=20, ge=1, le=100),
     db: Session = Depends(get_db)
 ):
-    return services.get_users(db, skip, limit) if hasattr(services, 'get_users') else []
+    return services.get_users(db, skip, limit)
 
 
 @router.get("/{user_id}", response_model=UserResponse)
@@ -40,9 +40,24 @@ def get_friends(user_id: int, db: Session = Depends(get_db)):
 def get_recommendations(
     user_id: int,
     limit: int = Query(default=10, ge=1, le=50),
+    algorithm: str = Query(default="v2"),
     db: Session = Depends(get_db)
 ):
-    return services.get_friend_recommendations(db, user_id, limit)
+    return services.get_friend_recommendations_v2(db, user_id, limit, algorithm)
+
+
+@router.get("/{user_id}/path/{other_user_id}")
+def get_connection_path(
+    user_id: int,
+    other_user_id: int,
+    db: Session = Depends(get_db)
+):
+    return services.get_connection_path(db, user_id, other_user_id)
+
+
+@router.get("/{user_id}/network")
+def get_network_degrees(user_id: int, db: Session = Depends(get_db)):
+    return services.get_network_degrees(db, user_id)
 
 
 @router.get("/{user_id}/stats")
