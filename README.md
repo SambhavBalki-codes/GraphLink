@@ -4,6 +4,34 @@ GraphLink is a full-stack social-network analysis and friend-recommendation plat
 
 The project combines a FastAPI and PostgreSQL backend with a React visualization dashboard. It includes shortest-path search, network-degree analysis, an interactive network graph, cache and request observability, reproducible recommendation evaluation, and typed OpenAPI responses.
 
+> Portfolio project demonstrating graph algorithms, API design, performance optimization, observability, and explainable product UI.
+
+## Contents
+
+- [Highlights](#highlights)
+- [Architecture](#architecture)
+- [Recommendation algorithms](#recommendation-algorithms)
+- [Tech stack](#tech-stack)
+- [Local setup](#local-setup)
+- [API reference](#api-reference)
+- [Caching and performance](#caching-and-performance)
+- [Observability](#observability)
+- [Reproducible evaluation](#reproducible-evaluation)
+- [Testing](#testing)
+- [Current limitations and next steps](#current-limitations-and-next-steps)
+
+## At a glance
+
+| Area | Implementation |
+|---|---|
+| Graph model | Undirected adjacency list with BFS traversal |
+| Recommendation ranking | Mutual-friend baseline and weighted multi-signal scoring |
+| Persistence | PostgreSQL with SQLAlchemy and Alembic |
+| API | FastAPI with typed Pydantic response contracts |
+| Performance | Cached graph snapshot, TTL/LRU recommendation cache, batched user hydration |
+| Frontend | React, Vite, Tailwind CSS, interactive 2D graph |
+| Evaluation | Reproducible Precision@K, Recall@K, and NDCG@K |
+
 ## Highlights
 
 - Graph-based friend recommendations over the Stanford SNAP Facebook dataset
@@ -283,6 +311,24 @@ Open `http://localhost:5174`.
 
 The Vite development server proxies `/api` requests to the backend at `http://localhost:8000`.
 
+### Quick start summary
+
+Once PostgreSQL is running and `.env` is configured, the shortest path to a local demo is:
+
+```bash
+alembic upgrade head
+python scripts/load_snap.py
+uvicorn app.main:app --reload --port 8000
+```
+
+In another terminal:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
 ## API reference
 
 FastAPI generates the complete interactive API reference at `/docs`. The main endpoints are:
@@ -474,6 +520,8 @@ npm run lint
 npm run build
 ```
 
+The current backend suite contains 41 tests covering graph logic, API behavior, cache behavior, metrics, response contracts, and evaluation reproducibility.
+
 ## Data integrity
 
 The friendship model enforces undirected-edge invariants at the database layer:
@@ -484,11 +532,9 @@ The friendship model enforces undirected-edge invariants at the database layer:
 - Application validation rejects self-friendships
 - Email addresses are unique and indexed
 
-## Resume-ready project summary
+## Current limitations and next steps
 
-> Built a full-stack graph-based friend recommendation platform with FastAPI, PostgreSQL, React, and BFS/Adamic-Adar algorithms over the Stanford SNAP Facebook network. Implemented multi-signal ranking, explainable recommendations, shortest-path search, TTL/LRU caching, request observability, typed OpenAPI contracts, reproducible Precision@K/Recall@K/NDCG@K evaluation, and a responsive graph exploration dashboard.
-
-## Future improvements
+The current implementation is intentionally local-development focused:
 
 - Move process-local caches to Redis for multi-worker deployments
 - Add Prometheus/OpenTelemetry exporters
@@ -500,4 +546,4 @@ The friendship model enforces undirected-edge invariants at the database layer:
 
 ## License
 
-Add the project license before distributing or publishing the repository.
+No license file is currently included. Add an explicit license, such as MIT, before distributing the repository publicly.
