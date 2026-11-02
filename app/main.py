@@ -1,8 +1,12 @@
 import logging
 import time
+
 from fastapi import FastAPI, Request
-from app.routes import users, friendships, recommendations
+from fastapi.middleware.cors import CORSMiddleware
+
+from app.config import settings
 from app.observability import metrics
+from app.routes import friendships, recommendations, users
 
 logger = logging.getLogger("graphlink.api")
 
@@ -10,6 +14,14 @@ app = FastAPI(
     title="GraphLink",
     description="A graph-based friend recommendation engine",
     version="1.0.0"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_origin_list,
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["*"],
 )
 
 app.include_router(users.router)

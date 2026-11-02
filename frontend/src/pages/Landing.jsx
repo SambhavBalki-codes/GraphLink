@@ -3,7 +3,13 @@ import {
   GitBranch, Database, BarChart3,
   ArrowRight, Network, Search, ChevronRight, ExternalLink
 } from 'lucide-react'
+import {
+  SiPython, SiFastapi, SiPostgresql, SiSqlalchemy, SiPytest,
+  SiReact, SiTailwindcss, SiAxios
+} from 'react-icons/si'
+import { FaProjectDiagram } from 'react-icons/fa'
 import { useEffect, useRef, useState } from 'react'
+import communityNetwork from '../assets/Connected_Community_Network.png'
 
 function useCountUp(target, duration = 2000, start = false) {
   const [count, setCount] = useState(0)
@@ -24,7 +30,7 @@ function useCountUp(target, duration = 2000, start = false) {
 function StatCounter({ value, label, sub, start }) {
   const count = useCountUp(value, 1800, start)
   return (
-    <div className="text-center">
+    <div className="landing-stat text-center">
       <p className="text-4xl font-bold text-slate-900 tabular-nums">
         {count.toLocaleString()}{typeof value === 'number' && value < 100 ? '%' : ''}
       </p>
@@ -49,20 +55,20 @@ export default function Landing() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 overflow-x-hidden">
+    <div className="landing-page min-h-screen bg-slate-50 text-slate-900 overflow-x-hidden">
 
       {/* NAV */}
       <nav className="fixed top-0 left-0 right-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur-md">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center shadow-sm">
+            <div className="w-7 h-7 bg-blue-600 flex items-center justify-center">
               <Network size={14} className="text-white" />
             </div>
             <span className="font-semibold text-slate-900 text-sm">GraphLink</span>
           </div>
           <div className="flex items-center gap-3">
             <a
-              href="https://github.com/SambhavBalki-codes/GraphLink"
+              href="https://github.com/SambhavBalki-codes/GraphLink/tree/main"
               target="_blank"
               rel="noreferrer"
               className="flex items-center gap-2 text-slate-600 hover:text-slate-900 text-sm transition-colors"
@@ -72,7 +78,7 @@ export default function Landing() {
             </a>
             <button
               onClick={() => navigate('/dashboard')}
-              className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-lg transition-colors shadow-sm"
+              className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 transition-colors"
             >
               Open App
             </button>
@@ -81,51 +87,53 @@ export default function Landing() {
       </nav>
 
       {/* HERO */}
-      <section className="relative min-h-[720px] flex items-center justify-center px-6 pt-16">
-        <div
-          className="absolute inset-0 opacity-70"
-          style={{
-            backgroundImage: 'radial-gradient(circle at 50% 0%, #dbeafe 0%, transparent 55%)'
-          }}
-        />
+      <section className="relative min-h-[680px] flex items-center px-6 pt-20 pb-16">
+        <div className="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-[0.95fr_1.05fr] items-center gap-12 lg:gap-16">
+        <div className="landing-hero-copy max-w-xl">
+            <div className="inline-flex items-center gap-2 border-l-2 border-blue-600 text-blue-700 text-xs pl-3 mb-7">
+              <div className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
+              Validated on Stanford SNAP Facebook Dataset
+            </div>
 
-        <div className="relative max-w-4xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 border border-blue-200 bg-blue-50 text-blue-700 text-xs px-3 py-1.5 rounded-full mb-8">
-            <div className="w-1.5 h-1.5 bg-blue-600 rounded-full" />
-            Validated on Stanford SNAP Facebook Dataset
+            <h1 className="text-5xl md:text-6xl font-bold leading-[1.08] tracking-tight text-slate-950 mb-6">
+              Friend recommendations
+              <span className="block text-blue-700">powered by graphs</span>
+            </h1>
+
+            <p className="text-slate-600 text-lg leading-relaxed max-w-lg mb-9">
+              GraphLink analyzes social networks using graph traversal algorithms
+              to surface meaningful connections — the same idea behind LinkedIn's
+              People You May Know.
+            </p>
+
+            <div className="flex flex-wrap items-center gap-4">
+              <button
+                onClick={() => navigate('/dashboard')}
+                className="group flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 font-medium transition-all"
+              >
+                Explore the network
+                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+              </button>
+              <a
+                href="https://github.com/SambhavBalki-codes/GraphLink/tree/main"
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-2 border border-slate-300 hover:border-slate-400 bg-white text-slate-700 hover:text-slate-950 px-6 py-3 font-medium transition-all"
+              >
+                <ExternalLink size={16} />
+                Source code
+              </a>
+            </div>
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-bold leading-[1.1] tracking-tight text-slate-950 mb-6">
-            Friend recommendations
-            <br />
-            <span className="text-blue-700">
-              powered by graphs
-            </span>
-          </h1>
-
-          <p className="text-slate-600 text-xl leading-relaxed max-w-2xl mx-auto mb-10">
-            GraphLink analyzes social networks using graph traversal algorithms
-            to surface meaningful connections — the same idea behind LinkedIn's
-            People You May Know.
-          </p>
-
-          <div className="flex items-center justify-center gap-4">
-            <button
-              onClick={() => navigate('/dashboard')}
-              className="group flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-all shadow-sm"
-            >
-              Explore the network
-              <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-            </button>
-            <a
-              href="https://github.com/SambhavBalki-codes/GraphLink"
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-2 border border-slate-300 hover:border-slate-400 bg-white text-slate-700 hover:text-slate-950 px-6 py-3 rounded-lg font-medium transition-all shadow-sm"
-            >
-              <ExternalLink size={16} />
-              Source code
-            </a>
+          <div className="landing-hero-visual relative flex justify-center lg:justify-end">
+            <div className="relative w-full max-w-[560px] border border-slate-300 bg-white p-3">
+              <img
+                src={communityNetwork}
+                alt="Connected community network visualization"
+                className="w-full aspect-square object-contain"
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -143,15 +151,18 @@ export default function Landing() {
       {/* HOW IT WORKS */}
       <section className="py-24 px-6">
         <div className="max-w-5xl mx-auto">
-          <div className="mb-16">
-            <p className="text-blue-700 text-sm font-medium mb-3">How it works</p>
-            <h2 className="text-4xl font-bold text-slate-950">From data to recommendations</h2>
+          <div className="mb-12 flex flex-col md:flex-row md:items-end md:justify-between gap-5">
+            <div>
+              <p className="text-blue-700 text-xs font-semibold uppercase tracking-[0.18em] mb-3">The process</p>
+              <h2 className="text-4xl font-bold text-slate-950">From data to recommendations</h2>
+            </div>
             <p className="text-slate-600 mt-3 max-w-xl">
               Three stages transform raw friendship records into ranked, explainable suggestions.
             </p>
           </div>
 
-          <div className="space-y-4">
+          <div className="relative space-y-5 md:space-y-0 md:grid md:grid-cols-3 md:gap-5">
+            <div className="absolute left-[16.66%] right-[16.66%] top-8 hidden h-px bg-slate-300 md:block" />
             {[
               {
                 step: '01',
@@ -180,12 +191,12 @@ export default function Landing() {
             ].map((item, i) => (
               <div
                 key={i}
-                className="group grid grid-cols-1 md:grid-cols-2 gap-6 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl p-8 transition-all shadow-sm"
+                className="landing-process-card relative bg-white border border-slate-300 p-6 transition-colors hover:border-blue-400"
               >
                 <div>
-                  <div className="flex items-center gap-3 mb-4">
-                    <span className="text-slate-400 text-sm font-mono">{item.step}</span>
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center
+                  <div className="relative z-10 flex items-center gap-3 mb-6">
+                    <span className="flex h-8 w-8 items-center justify-center border border-blue-600 bg-white text-blue-700 text-xs font-bold font-mono">{item.step}</span>
+                    <div className={`w-8 h-8 flex items-center justify-center
                       ${item.color === 'blue' ? 'bg-blue-50' : ''}
                       ${item.color === 'violet' ? 'bg-slate-100' : ''}
                       ${item.color === 'emerald' ? 'bg-slate-100' : ''}
@@ -198,10 +209,10 @@ export default function Landing() {
                     </div>
                     <h3 className="font-semibold text-slate-900">{item.title}</h3>
                   </div>
-                  <p className="text-slate-600 text-sm leading-relaxed">{item.description}</p>
+                  <p className="text-slate-600 text-sm leading-6 min-h-[144px]">{item.description}</p>
                 </div>
-                <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
-                  <pre className="text-xs text-slate-700 font-mono leading-relaxed whitespace-pre-wrap">
+                <div className="mt-6 bg-slate-900 p-4 border-l-4 border-blue-500">
+                  <pre className="text-xs text-slate-200 font-mono leading-relaxed whitespace-pre-wrap">
                     {item.code}
                   </pre>
                 </div>
@@ -223,7 +234,7 @@ export default function Landing() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-7 shadow-sm">
+            <div className="landing-feature-card bg-slate-50 border border-slate-200 rounded-2xl p-7 shadow-sm">
               <div className="flex items-center justify-between mb-5">
                 <span className="text-xs font-medium bg-slate-200 text-slate-700 px-2.5 py-1 rounded-full">V1 — Baseline</span>
                 <span className="text-2xl font-bold text-slate-700">35.5%</span>
@@ -243,7 +254,7 @@ export default function Landing() {
               </div>
             </div>
 
-            <div className="bg-blue-50/60 border border-blue-200 rounded-2xl p-7 relative overflow-hidden shadow-sm">
+            <div className="landing-feature-card bg-blue-50/60 border border-blue-200 rounded-2xl p-7 relative overflow-hidden shadow-sm">
               <div className="absolute top-4 right-4 text-xs font-medium bg-blue-100 text-blue-700 px-2.5 py-1 rounded-full">
                 Active
               </div>
@@ -277,7 +288,7 @@ export default function Landing() {
             </div>
           </div>
 
-          <div className="bg-slate-50 border border-slate-200 rounded-2xl p-7 shadow-sm">
+          <div className="landing-feature-card bg-slate-50 border border-slate-200 rounded-2xl p-7 shadow-sm">
             <div className="flex items-start gap-4 mb-6">
               <div className="w-9 h-9 bg-blue-50 rounded-lg flex items-center justify-center shrink-0">
                 <GitBranch size={16} className="text-blue-700" />
@@ -310,46 +321,67 @@ export default function Landing() {
       {/* TECH STACK */}
       <section className="py-24 px-6">
         <div className="max-w-5xl mx-auto">
-          <div className="mb-16">
-            <p className="text-blue-700 text-sm font-medium mb-3">Stack</p>
-            <h2 className="text-4xl font-bold text-slate-950">Built with the right tools</h2>
+          <div className="mb-12 flex flex-col md:flex-row md:items-end md:justify-between gap-5">
+            <div>
+              <p className="text-blue-700 text-xs font-semibold uppercase tracking-[0.18em] mb-3">Technology</p>
+              <h2 className="text-4xl font-bold text-slate-950">A stack built for the graph</h2>
+            </div>
+            <p className="text-slate-600 max-w-sm leading-relaxed">
+              A focused set of tools keeps the data layer reliable, the API fast, and the network easy to explore.
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white border border-slate-200 rounded-2xl p-7 shadow-sm">
-              <p className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-5">Backend</p>
-              <div className="space-y-4">
+            <div className="landing-stack-card landing-feature-card bg-white border border-slate-200 rounded-2xl p-7 shadow-sm">
+              <div className="flex items-start justify-between mb-7">
+                <div>
+                  <p className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">01 / Backend</p>
+                  <h3 className="text-xl font-semibold text-slate-950">Data and intelligence</h3>
+                </div>
+                <div className="w-10 h-10 border border-blue-200 bg-blue-50 flex items-center justify-center">
+                  <SiPython size={20} color="#3776AB" />
+                </div>
+              </div>
+              <div className="space-y-3">
                 {[
-                  { name: 'Python 3.12 + FastAPI', desc: 'REST API with automatic OpenAPI docs' },
-                  { name: 'PostgreSQL 16', desc: 'Relational DB with CHECK constraints and foreign keys' },
-                  { name: 'SQLAlchemy 2.x + Alembic', desc: 'ORM with tracked schema migrations' },
-                  { name: 'Pytest', desc: '30 tests — unit + integration + API' },
+                  { name: 'Python 3.12 + FastAPI', desc: 'Typed REST endpoints and automatic OpenAPI documentation', icon: SiFastapi, color: '#009688' },
+                  { name: 'PostgreSQL 16', desc: 'Relational storage with constraints for graph integrity', icon: SiPostgresql, color: '#4169E1' },
+                  { name: 'SQLAlchemy 2.x + Alembic', desc: 'Database access and versioned schema migrations', icon: SiSqlalchemy, color: '#D71F00' },
+                  { name: 'Pytest', desc: 'Unit, integration, and API contract coverage', icon: SiPytest, color: '#0A9EDC' },
                 ].map(item => (
-                  <div key={item.name} className="flex items-start gap-3">
-                    <div className="w-1.5 h-1.5 bg-blue-600 rounded-full mt-2 shrink-0" />
+                  <div key={item.name} className="flex items-start gap-3 border-t border-slate-200 pt-3 first:border-t-0 first:pt-0">
+                    <item.icon size={20} color={item.color} className="mt-0.5 shrink-0" aria-hidden="true" />
                     <div>
-                      <p className="text-slate-900 text-sm font-medium">{item.name}</p>
-                      <p className="text-slate-500 text-xs mt-0.5">{item.desc}</p>
+                      <p className="text-slate-900 text-sm font-semibold">{item.name}</p>
+                      <p className="text-slate-500 text-xs mt-1 leading-relaxed">{item.desc}</p>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="bg-white border border-slate-200 rounded-2xl p-7 shadow-sm">
-              <p className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-5">Frontend</p>
-              <div className="space-y-4">
+            <div className="landing-stack-card landing-feature-card bg-white border border-slate-200 rounded-2xl p-7 shadow-sm">
+              <div className="flex items-start justify-between mb-7">
+                <div>
+                  <p className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">02 / Frontend</p>
+                  <h3 className="text-xl font-semibold text-slate-950">Interaction and clarity</h3>
+                </div>
+                <div className="w-10 h-10 border border-blue-200 bg-blue-50 flex items-center justify-center">
+                  <SiReact size={20} color="#61DAFB" />
+                </div>
+              </div>
+              <div className="space-y-3">
                 {[
-                  { name: 'React 18 + Vite', desc: 'Fast SPA with file-based routing' },
-                  { name: 'Tailwind CSS', desc: 'Utility-first styling' },
-                  { name: 'react-force-graph-2d', desc: 'Interactive network visualization' },
-                  { name: 'Axios + React Router', desc: 'API layer and client-side routing' },
+                  { name: 'React 18 + Vite', desc: 'Fast single-page application foundation', icon: SiReact, color: '#61DAFB' },
+                  { name: 'Tailwind CSS', desc: 'Consistent responsive layout and styling', icon: SiTailwindcss, color: '#06B6D4' },
+                  { name: 'react-force-graph-2d', desc: 'Interactive network visualization', icon: FaProjectDiagram, color: '#2563EB' },
+                  { name: 'Axios + React Router', desc: 'API communication and client-side navigation', icon: SiAxios, color: '#5A29E4' },
                 ].map(item => (
-                  <div key={item.name} className="flex items-start gap-3">
-                    <div className="w-1.5 h-1.5 bg-blue-600 rounded-full mt-2 shrink-0" />
+                  <div key={item.name} className="flex items-start gap-3 border-t border-slate-200 pt-3 first:border-t-0 first:pt-0">
+                    <item.icon size={20} color={item.color} className="mt-0.5 shrink-0" aria-hidden="true" />
                     <div>
-                      <p className="text-slate-900 text-sm font-medium">{item.name}</p>
-                      <p className="text-slate-500 text-xs mt-0.5">{item.desc}</p>
+                      <p className="text-slate-900 text-sm font-semibold">{item.name}</p>
+                      <p className="text-slate-500 text-xs mt-1 leading-relaxed">{item.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -378,7 +410,7 @@ export default function Landing() {
               <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
             </button>
             <a
-              href="https://github.com/SambhavBalki-codes/GraphLink"
+              href="https://github.com/SambhavBalki-codes/GraphLink/tree/main"
               target="_blank"
               rel="noreferrer"
               className="flex items-center gap-2 border border-slate-300 hover:border-slate-400 bg-white text-slate-700 hover:text-slate-950 px-6 py-3 rounded-lg font-medium transition-all"

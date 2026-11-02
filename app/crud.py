@@ -1,6 +1,7 @@
-from sqlalchemy.orm import Session
 from sqlalchemy import or_
-from app.models import User, Friendship
+from sqlalchemy.orm import Session
+
+from app.models import Friendship, User
 from app.schemas import UserCreate
 
 

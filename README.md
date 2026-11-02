@@ -329,6 +329,50 @@ npm install
 npm run dev
 ```
 
+### Docker Compose setup
+
+Docker Desktop provides the fastest reproducible setup:
+
+```powershell
+docker compose up --build -d
+docker compose exec backend python scripts/load_snap.py
+```
+
+Open `http://localhost:5174`. The backend is available at
+`http://localhost:8000/docs`.
+
+To stop the stack:
+
+```powershell
+docker compose down
+```
+
+The PostgreSQL volume is retained between restarts. To remove the database
+volume and reload the dataset from scratch:
+
+```powershell
+docker compose down -v
+```
+
+### Production environment
+
+Set these variables in the backend deployment:
+
+```env
+DATABASE_URL=postgresql+psycopg://user:password@host:5432/graphlink
+TEST_DATABASE_URL=postgresql+psycopg://user:password@host:5432/graphlink
+CORS_ORIGINS=https://your-frontend-domain.example
+```
+
+Set this variable when the frontend and backend use different domains:
+
+```env
+VITE_API_URL=https://your-backend-domain.example
+```
+
+For a single-domain Docker deployment, keep `VITE_API_URL=/api`; Nginx
+forwards those requests to the backend service.
+
 ## API reference
 
 FastAPI generates the complete interactive API reference at `/docs`. The main endpoints are:

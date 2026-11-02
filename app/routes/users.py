@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
+
+from app import services
 from app.database import get_db
 from app.schemas import (
     ConnectionPathResponse,
@@ -12,7 +14,6 @@ from app.schemas import (
     UserSummary,
     UserUpdate,
 )
-from app import services
 
 router = APIRouter(prefix="/users", tags=["Users"])
 

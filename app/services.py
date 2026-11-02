@@ -1,10 +1,12 @@
-from sqlalchemy.orm import Session
-from fastapi import HTTPException
-from app import crud
-from app.graph import build_adjacency_list, get_recommendations, bfs_distances
-from app.cache import graph_snapshot_cache, recommendation_cache
-from app.observability import metrics
 import time
+
+from fastapi import HTTPException
+from sqlalchemy.orm import Session
+
+from app import crud
+from app.cache import graph_snapshot_cache, recommendation_cache
+from app.graph import bfs_distances, build_adjacency_list, get_recommendations
+from app.observability import metrics
 
 
 def _build_graph(db: Session):

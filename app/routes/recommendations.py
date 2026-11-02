@@ -1,10 +1,16 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from app.database import get_db
+
 from app import services
 from app.cache import graph_snapshot_cache, recommendation_cache
+from app.database import get_db
 from app.observability import metrics
-from app.schemas import CacheStatsResponse, HealthResponse, MetricsResponse, NetworkStats
+from app.schemas import (
+    CacheStatsResponse,
+    HealthResponse,
+    MetricsResponse,
+    NetworkStats,
+)
 
 router = APIRouter(tags=["Stats"])
 

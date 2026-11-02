@@ -1,33 +1,33 @@
-from pydantic import BaseModel, EmailStr
 from datetime import datetime
-from typing import Optional
+
+from pydantic import BaseModel, EmailStr
 
 
 class UserCreate(BaseModel):
     name: str
     email: EmailStr
-    company: Optional[str] = None
-    location: Optional[str] = None
-    education: Optional[str] = None
-    bio: Optional[str] = None
+    company: str | None = None
+    location: str | None = None
+    education: str | None = None
+    bio: str | None = None
 
 
 class UserUpdate(BaseModel):
-    name: Optional[str] = None
-    company: Optional[str] = None
-    location: Optional[str] = None
-    education: Optional[str] = None
-    bio: Optional[str] = None
+    name: str | None = None
+    company: str | None = None
+    location: str | None = None
+    education: str | None = None
+    bio: str | None = None
 
 
 class UserResponse(BaseModel):
     id: int
     name: str
     email: str
-    company: Optional[str] = None
-    location: Optional[str] = None
-    education: Optional[str] = None
-    bio: Optional[str] = None
+    company: str | None = None
+    location: str | None = None
+    education: str | None = None
+    bio: str | None = None
     created_at: datetime
 
     model_config = {"from_attributes": True}
@@ -69,9 +69,9 @@ class RecommendationItem(BaseModel):
     mutual_friend_count: int
     mutual_friends: list[MutualFriend]
     reason: str
-    score: Optional[float] = None
-    distance: Optional[int] = None
-    signals: Optional[dict[str, float]] = None
+    score: float | None = None
+    distance: int | None = None
+    signals: dict[str, float] | None = None
 
 
 class RecommendationResponse(BaseModel):
@@ -101,7 +101,7 @@ class ConnectionPathResponse(BaseModel):
     other_user_id: int
     connected: bool
     path: list[ConnectionPathUser]
-    degrees: Optional[int] = None
+    degrees: int | None = None
     explanation: str
 
 

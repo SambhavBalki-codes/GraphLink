@@ -1,8 +1,14 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from app.database import get_db
-from app.schemas import FriendshipCreate, FriendshipDelete, FriendshipResponse, MessageResponse
+
 from app import services
+from app.database import get_db
+from app.schemas import (
+    FriendshipCreate,
+    FriendshipDelete,
+    FriendshipResponse,
+    MessageResponse,
+)
 
 router = APIRouter(prefix="/friendships", tags=["Friendships"])
 

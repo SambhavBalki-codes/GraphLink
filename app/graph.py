@@ -1,5 +1,5 @@
-from collections import deque
 import math
+from collections import deque
 
 
 def build_adjacency_list(friendships: list[tuple[int, int]]) -> dict[int, set[int]]:

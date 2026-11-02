@@ -1,7 +1,7 @@
+import time
 from collections import OrderedDict
 from collections.abc import Callable
 from threading import Lock
-import time
 
 
 class RecommendationCache:

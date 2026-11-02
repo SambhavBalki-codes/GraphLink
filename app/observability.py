@@ -1,6 +1,5 @@
 from collections import defaultdict, deque
 from threading import Lock
-import time
 
 
 class Metrics:
