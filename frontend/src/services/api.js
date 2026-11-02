@@ -43,6 +43,9 @@ export const getNetworkStats = () =>
 export const getCacheStats = () =>
   api.get('/cache/stats')
 
+export const getMetrics = () =>
+  api.get('/metrics')
+
 export const createFriendship = (userId1, userId2) =>
   api.post('/friendships', { user_id_1: userId1, user_id_2: userId2 })
 

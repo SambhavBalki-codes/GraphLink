@@ -24,8 +24,9 @@ export default function Users() {
   return (
     <div>
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">Users</h2>
-        <p className="text-gray-500 mt-1">Browse the friendship network</p>
+        <p className="text-sm font-medium text-blue-700 mb-2">Directory</p>
+        <h2 className="text-3xl font-bold tracking-tight text-slate-950">Users</h2>
+        <p className="text-slate-500 mt-1">Browse people in the friendship network.</p>
       </div>
 
       <div className="mb-6">
@@ -34,7 +35,7 @@ export default function Users() {
           placeholder="Search by name or email..."
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="w-full max-w-md border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full max-w-md bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400"
         />
       </div>
 
@@ -54,14 +55,14 @@ export default function Users() {
             <button
               onClick={() => setSkip(Math.max(0, skip - limit))}
               disabled={skip === 0}
-              className="px-4 py-2 text-sm border border-gray-200 rounded-lg disabled:opacity-40 hover:bg-gray-50"
+              className="px-4 py-2 text-sm border border-slate-200 bg-white rounded-lg disabled:opacity-40 hover:bg-slate-50"
             >
               Previous
             </button>
             <button
               onClick={() => setSkip(skip + limit)}
               disabled={users.length < limit}
-              className="px-4 py-2 text-sm border border-gray-200 rounded-lg disabled:opacity-40 hover:bg-gray-50"
+              className="px-4 py-2 text-sm border border-slate-200 bg-white rounded-lg disabled:opacity-40 hover:bg-slate-50"
             >
               Next
             </button>

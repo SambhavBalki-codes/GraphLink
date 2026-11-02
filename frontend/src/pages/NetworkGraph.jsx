@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import ForceGraph2D from 'react-force-graph-2d'
 import { getUsers, getUserFriends } from '../services/api'
 
@@ -7,13 +7,11 @@ export default function NetworkGraph() {
   const [loading, setLoading] = useState(true)
   const [selectedNode, setSelectedNode] = useState(null)
   const [userCount, setUserCount] = useState(50)
+  const [graphWidth, setGraphWidth] = useState(0)
   const graphRef = useRef()
+  const graphContainerRef = useRef()
 
-  useEffect(() => {
-    loadGraph()
-  }, [userCount])
-
-  const loadGraph = async () => {
+  const loadGraph = useCallback(async () => {
     setLoading(true)
     try {
       const usersRes = await getUsers(0, userCount)
@@ -42,7 +40,9 @@ export default function NetworkGraph() {
                 }
               }
             })
-          } catch (e) {}
+          } catch (error) {
+            console.warn(`Could not load friends for user ${user.id}`, error)
+          }
         })
       )
 
@@ -50,63 +50,77 @@ export default function NetworkGraph() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [userCount])
+
+  useEffect(() => {
+    loadGraph()
+  }, [loadGraph])
+
+  useEffect(() => {
+    const container = graphContainerRef.current
+    if (!container) return
+
+    const observer = new ResizeObserver(([entry]) => {
+      setGraphWidth(entry.contentRect.width)
+    })
+    observer.observe(container)
+    return () => observer.disconnect()
+  }, [])
 
   return (
     <div>
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Network Graph</h2>
-        <p className="text-gray-500 mt-1">Visual representation of the friendship network</p>
+      <div className="mb-8">
+        <p className="text-sm font-medium text-blue-700 mb-2">Visual explorer</p>
+        <h2 className="text-3xl font-bold tracking-tight text-slate-950">Network Graph</h2>
+        <p className="text-slate-500 mt-1">Explore connections across a focused sample of the friendship network.</p>
       </div>
 
-      <div className="flex items-center gap-4 mb-4">
-        <label className="text-sm font-medium text-gray-700">Users to display:</label>
+      <div className="bg-white border border-slate-200 rounded-2xl p-4 mb-4 shadow-sm flex flex-wrap items-center gap-4">
+        <label className="text-sm font-medium text-slate-700">Users to display</label>
         <select
           value={userCount}
           onChange={e => setUserCount(Number(e.target.value))}
-          className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="text-sm border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400"
         >
           <option value={30}>30 users</option>
           <option value={50}>50 users</option>
           <option value={100}>100 users</option>
         </select>
 
-        {selectedNode && (
-          <div className="ml-4 bg-blue-50 border border-blue-200 rounded-lg px-4 py-2 text-sm">
-            <span className="text-blue-600 font-medium">{selectedNode.name}</span>
-            <span className="text-blue-400 ml-2">ID: {selectedNode.id}</span>
-          </div>
-        )}
+        <span className="text-xs text-slate-400">Click a node to inspect it</span>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+      <div ref={graphContainerRef} className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
         {loading ? (
-          <div className="flex items-center justify-center h-96">
-            <p className="text-gray-400">Building network graph...</p>
+          <div className="flex items-center justify-center h-[28rem]">
+            <div className="text-center">
+              <div className="w-8 h-8 border-2 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-3" />
+              <p className="text-slate-500 text-sm">Building network graph...</p>
+            </div>
           </div>
         ) : (
           <ForceGraph2D
             ref={graphRef}
             graphData={graphData}
-            width={900}
+            width={graphWidth || 700}
             height={500}
             nodeLabel={node => `${node.name} (ID: ${node.id})`}
-            nodeColor={() => '#3b82f6'}
-            nodeRelSize={5}
-            linkColor={() => '#e5e7eb'}
-            linkWidth={1}
+            nodeColor={() => '#2563eb'}
+            nodeRelSize={4}
+            linkColor={() => '#cbd5e1'}
+            linkWidth={0.8}
             onNodeClick={node => setSelectedNode(node)}
             backgroundColor="#ffffff"
             nodeCanvasObject={(node, ctx, globalScale) => {
               const label = node.name
-              const fontSize = 10 / globalScale
+              const fontSize = 9 / globalScale
               ctx.font = `${fontSize}px Sans-Serif`
-              ctx.fillStyle = '#3b82f6'
+              ctx.fillStyle = '#2563eb'
               ctx.beginPath()
               ctx.arc(node.x, node.y, 4, 0, 2 * Math.PI)
               ctx.fill()
               if (globalScale > 1.5) {
-                ctx.fillStyle = '#374151'
+                ctx.fillStyle = '#334155'
                 ctx.textAlign = 'center'
                 ctx.fillText(label, node.x, node.y + 8)
               }
@@ -115,8 +129,20 @@ export default function NetworkGraph() {
         )}
       </div>
 
-      <div className="mt-4 text-sm text-gray-400">
-        {graphData.nodes.length} nodes · {graphData.links.length} edges · Click a node to select it
+      {selectedNode && (
+        <div className="mt-4 bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 flex items-center justify-between gap-4">
+          <div>
+            <p className="text-sm font-semibold text-slate-900">{selectedNode.name}</p>
+            <p className="text-xs text-slate-500">User ID: {selectedNode.id} · {selectedNode.email}</p>
+          </div>
+          <button onClick={() => setSelectedNode(null)} className="text-xs font-medium text-blue-700 hover:text-blue-900">
+            Clear
+          </button>
+        </div>
+      )}
+
+      <div className="mt-4 text-sm text-slate-400">
+        {graphData.nodes.length} nodes · {graphData.links.length} edges
       </div>
     </div>
   )

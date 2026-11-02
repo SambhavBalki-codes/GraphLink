@@ -1,9 +1,9 @@
 export default function StatCard({ label, value, sub }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6">
-      <p className="text-sm text-gray-500 font-medium">{label}</p>
-      <p className="text-3xl font-bold text-gray-900 mt-1">{value}</p>
-      {sub && <p className="text-sm text-gray-400 mt-1">{sub}</p>}
+    <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm transition-shadow hover:shadow-md">
+      <p className="text-sm text-slate-500 font-medium">{label}</p>
+      <p className="text-3xl font-bold text-slate-950 mt-2">{value}</p>
+      {sub && <p className="text-sm text-slate-400 mt-1">{sub}</p>}
     </div>
   )
 }
