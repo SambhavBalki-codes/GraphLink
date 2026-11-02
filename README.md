@@ -18,6 +18,7 @@ The project combines a FastAPI and PostgreSQL backend with a React visualization
 - [Observability](#observability)
 - [Reproducible evaluation](#reproducible-evaluation)
 - [Testing](#testing)
+- [Further improvements in progress](#further-improvements-in-progress)
 
 ## At a glance
 
@@ -530,6 +531,18 @@ The friendship model enforces undirected-edge invariants at the database layer:
 - Foreign keys ensure both users exist
 - Application validation rejects self-friendships
 - Email addresses are unique and indexed
+
+## Further improvements in progress
+
+The following improvements are planned as the project continues toward a more production-ready deployment:
+
+- Move process-local caches to Redis for multi-worker deployments
+- Add Prometheus/OpenTelemetry exporters
+- Add CI for backend tests, frontend build, lint, and coverage
+- Add Docker Compose for PostgreSQL, backend, and frontend
+- Add a deployed demo and screenshots
+- Add persistent evaluation reports and experiment history
+- Add database query profiling and further batch-loading optimizations
 
 ## License
 
