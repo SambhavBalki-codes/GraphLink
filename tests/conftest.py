@@ -5,7 +5,8 @@ from sqlalchemy.orm import sessionmaker
 from app.main import app
 from app.database import Base, get_db
 from app.config import settings
-from app.cache import recommendation_cache
+from app.cache import graph_snapshot_cache, recommendation_cache
+from app.observability import metrics
 
 engine = create_engine(settings.TEST_DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -31,8 +32,12 @@ def client(db):
             pass
 
     recommendation_cache.clear()
+    graph_snapshot_cache.invalidate()
+    metrics.reset()
     app.dependency_overrides[get_db] = override_get_db
     with TestClient(app) as c:
         yield c
     app.dependency_overrides.clear()
     recommendation_cache.clear()
+    graph_snapshot_cache.invalidate()
+    metrics.reset()

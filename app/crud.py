@@ -8,6 +8,12 @@ def get_user(db: Session, user_id: int):
     return db.query(User).filter(User.id == user_id).first()
 
 
+def get_users_by_ids(db: Session, user_ids: set[int]):
+    if not user_ids:
+        return []
+    return db.query(User).filter(User.id.in_(user_ids)).all()
+
+
 def get_user_by_email(db: Session, email: str):
     return db.query(User).filter(User.email == email).first()
 

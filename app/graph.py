@@ -46,6 +46,17 @@ def multi_signal_score(
     graph: dict[int, set[int]],
     distance: int
 ) -> float:
+    return multi_signal_breakdown(
+        user_id, candidate_id, graph, distance
+    )["final_score"]
+
+
+def multi_signal_breakdown(
+    user_id: int,
+    candidate_id: int,
+    graph: dict[int, set[int]],
+    distance: int
+) -> dict[str, float]:
     mutual = get_mutual_friends(user_id, candidate_id, graph)
     mutual_count = len(mutual)
 
@@ -57,13 +68,21 @@ def multi_signal_score(
 
     distance_score = 1.0 / distance if distance > 0 else 0.0
 
-    final_score = (
-        mutual_score * 0.40 +
-        aa_normalized * 0.40 +
-        distance_score * 0.20
-    )
+    mutual_component = mutual_score * 0.40
+    adamic_adar_component = aa_normalized * 0.40
+    distance_component = distance_score * 0.20
+    final_score = mutual_component + adamic_adar_component + distance_component
 
-    return round(final_score, 4)
+    return {
+        "mutual_ratio": round(mutual_score, 4),
+        "adamic_adar": round(aa_score, 4),
+        "adamic_adar_normalized": round(aa_normalized, 4),
+        "distance_score": round(distance_score, 4),
+        "mutual_component": round(mutual_component, 4),
+        "adamic_adar_component": round(adamic_adar_component, 4),
+        "distance_component": round(distance_component, 4),
+        "final_score": round(final_score, 4),
+    }
 
 
 def get_recommendations(
@@ -99,9 +118,14 @@ def get_recommendations(
         mutual_count = len(mutual_friends)
 
         if use_multi_signal:
-            score = multi_signal_score(user_id, candidate_id, graph, distance)
+            breakdown = multi_signal_breakdown(user_id, candidate_id, graph, distance)
+            score = breakdown["final_score"]
         else:
             score = float(mutual_count)
+            breakdown = {
+                "mutual_count": float(mutual_count),
+                "final_score": score,
+            }
 
         recommendations.append({
             "candidate_id": candidate_id,
@@ -110,6 +134,7 @@ def get_recommendations(
             "score": score,
             "distance": distance
         })
+        recommendations[-1]["signals"] = breakdown
 
     recommendations.sort(
         key=lambda x: (-x["score"], x["candidate_id"])

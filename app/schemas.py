@@ -69,10 +69,14 @@ class RecommendationItem(BaseModel):
     mutual_friend_count: int
     mutual_friends: list[MutualFriend]
     reason: str
+    score: Optional[float] = None
+    distance: Optional[int] = None
+    signals: Optional[dict[str, float]] = None
 
 
 class RecommendationResponse(BaseModel):
     user_id: int
+    algorithm: str
     recommendations: list[RecommendationItem]
 
 
@@ -85,6 +89,68 @@ class UserStats(BaseModel):
     user_id: int
     name: str
     friend_count: int
+
+
+class ConnectionPathUser(BaseModel):
+    user_id: int
+    name: str
+
+
+class ConnectionPathResponse(BaseModel):
+    user_id: int
+    other_user_id: int
+    connected: bool
+    path: list[ConnectionPathUser]
+    degrees: Optional[int] = None
+    explanation: str
+
+
+class NetworkDegreesResponse(BaseModel):
+    user_id: int
+    first_degree: int
+    second_degree: int
+    third_degree: int
+
+
+class MessageResponse(BaseModel):
+    message: str
+
+
+class GraphSnapshotStats(BaseModel):
+    loaded: bool
+    build_count: int
+    nodes: int
+    last_build_ms: float
+    total_build_ms: float
+
+
+class CacheStatsResponse(BaseModel):
+    cached_users: int
+    max_size: int
+    hits: int
+    misses: int
+    hit_rate_percent: float
+    graph_snapshot: GraphSnapshotStats
+
+
+class EndpointMetric(BaseModel):
+    method: str
+    path: str
+    requests: int
+    errors: int
+    average_ms: float
+
+
+class RecommendationMetrics(BaseModel):
+    count: int
+    average_ms: float
+    cache_hits: int
+
+
+class MetricsResponse(BaseModel):
+    requests: list[EndpointMetric]
+    recommendations: RecommendationMetrics
+    recent_average_ms: float
 
 
 class HealthResponse(BaseModel):
