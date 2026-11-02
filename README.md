@@ -588,6 +588,3 @@ The following improvements are planned as the project continues toward a more pr
 - Add persistent evaluation reports and experiment history
 - Add database query profiling and further batch-loading optimizations
 
-## License
-
-No license file is currently included. Add an explicit license, such as MIT, before distributing the repository publicly.
